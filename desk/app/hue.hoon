@@ -80,19 +80,18 @@
     =/  act  !<(action vase)
     ?-  -.act
         %toggle
-      :_  this  :~  
-        %-  change-light-state
-            [url +.act bri username access-token]
-      ==
+      :_  this
+      ::  changed this to produce a list of cards.
+      %-  change-light-state:hc
+      [url +.act bri username access-token]
     ::
         %bri
-      :_  this  :~  
-        %-  change-light-state
-            [url %.y +.act username access-token]
-      ==
+      :_  this
+      %-  change-light-state:hc
+      [url %.y +.act username access-token]
     ::
         %code
-      :_  this  ~[(setup-with-code +.act)]
+      [(setup-with-code +.act) this]
     ==
   ++  on-watch  on-watch:def
   ++  on-leave  on-leave:def
@@ -139,7 +138,7 @@
             refresh-token=@t
           ==
           q.p.p.sign
-        :-  ~[(set-refresh-timer now.bowl)]  
+        :-  (set-refresh-timer:hc now.bowl)
         %=  this
           username  username.resp
           code  code.resp
@@ -152,14 +151,14 @@
       ::
         [%refresh ~]
       ?>  ?=([%behn %wake *] sign)
-      [~[(refresh-tokens refresh-token)] this]
+      [(refresh-tokens:hc refresh-token) this]
       ::
         [%tokens ~]
       ?>  ?=([%khan %arow *] sign)
       ?:  ?=(%.y -.p.sign)
         =/  resp
           !<([access-token=@t refresh-token=@t] q.p.p.sign)
-        :-  ~[(set-refresh-timer now.bowl)]
+        :-  (set-refresh-timer:hc now.bowl)
         %=  this
           access-token  access-token.resp
           refresh-token  refresh-token.resp
@@ -184,7 +183,7 @@
     =/  body  ~[['on' b+on] ['bri' n+`@t`(scot %ud bri)]]
     =/  auth  `@t`(cat 3 'Bearer ' access-token)
     =;  cag=cage
-      [%pass /light %arvo %k %fard %hue %put-request cag]
+      [%pass /light %arvo %k %fard %hue %put-request cag]~
     :-  %noun
     !>  ^-  [@t (list [@t @t]) (unit octs)]
     :-  `@t`(rap 3 url username '/groups/0/action' ~)
@@ -206,15 +205,15 @@
 ++  setup-with-code
   |=  [code=@t]
   :+  %pass  /setup
-  [%arvo %k %fard %hue %setup-bridge %noun+!>(code)]
+  [%arvo %k %fard %hue %setup-bridge %noun+!>(code)]~
 ::
 ++  set-refresh-timer
   |=  [now=@da]
-  [%pass /refresh %arvo %b %wait (add ~d6 now)]
+  [%pass /refresh %arvo %b %wait (add ~d6 now)]~
 ++  refresh-tokens
   |=  [refresh-token=@t]
   =;  cag=cage
-    [%pass /tokens %arvo %k %fard %hue %post-for-tokens cag]
+    [%pass /tokens %arvo %k %fard %hue %post-for-tokens cag]~
   :-  %noun
   !>  ^-  [url=@t headers=(list [@t @t]) body=(unit octs)]
   :-  'https://api.meethue.com/oauth2/refresh?grant_type=refresh_token'
