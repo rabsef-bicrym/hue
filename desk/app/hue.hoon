@@ -10,10 +10,8 @@
 ::    instead, do [~[some cards] this] - it's very strange otherwise
 ::  
 /-  *hue
-/+  def=default-agent,
-    dbug
+/+  default-agent, dbug, hjc=hue-json-encoder
     :: *hue-json-decoder,  seemingly not in use yet.
-    :: *hue-json-encoder   seemingly not in use yet.
 |%
 +$  versioned-state
   $%  state-0
@@ -91,7 +89,7 @@
       [url %.y +.act username access-token]
     ::
         %code
-      [(setup-with-code +.act) this]
+      [(setup-with-code:hc +.act) this]
     ==
   ++  on-watch  on-watch:def
   ++  on-leave  on-leave:def
@@ -102,8 +100,7 @@
     ::
     ^-  (unit (unit cage))
     ?>  ?=([%x %update ~] path)
-    :^  ~  ~  %json
-    !>  (update-to-json [on bri code])
+    ``json+!>((update-to-json:hjc [on bri code]))
   ++  on-agent  on-agent:def
   ++  on-arvo
     |=  [=wire sign=sign-arvo]
@@ -204,16 +201,18 @@
 ::
 ++  setup-with-code
   |=  [code=@t]
-  :+  %pass  /setup
-  [%arvo %k %fard %hue %setup-bridge %noun+!>(code)]~
+  ^-  (list card)
+  [%pass /setup %arvo %k %fard %hue %setup-bridge noun+!>(code)]~
 ::
 ++  set-refresh-timer
   |=  [now=@da]
+  ^-  (list card)
   [%pass /refresh %arvo %b %wait (add ~d6 now)]~
 ++  refresh-tokens
   |=  [refresh-token=@t]
+  ^-  (list card)
   =;  cag=cage
-    [%pass /tokens %arvo %k %fard %hue %post-for-tokens cag]~
+    [%pass /tokens %arvo %k %fard q.byk.bol %post-for-tokens cag]~
   :-  %noun
   !>  ^-  [url=@t headers=(list [@t @t]) body=(unit octs)]
   :-  'https://api.meethue.com/oauth2/refresh?grant_type=refresh_token'
