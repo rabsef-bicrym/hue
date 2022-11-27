@@ -202,7 +202,7 @@
 ++  setup-with-code
   |=  [code=@t]
   ^-  (list card)
-  [%pass /setup %arvo %k %fard %hue %setup-bridge noun+!>(code)]~
+  [%pass /setup %arvo %k %fard q.byk.bol %setup-bridge noun+!>(code)]~
 ::
 ++  set-refresh-timer
   |=  [now=@da]
